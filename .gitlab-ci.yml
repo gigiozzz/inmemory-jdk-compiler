@@ -53,10 +53,10 @@ release-start:
     - git checkout -b ci_processing
     # make your changes
     - touch test.txt
-    - ls -la
     # push changes
     # always return true so that the build does not fail if there are no changes
-    - git push origin ci_processing:${CI_BUILD_REF_NAME} || true
+    - git commit -am "release-start"
+    - git push --all
     
 
     
