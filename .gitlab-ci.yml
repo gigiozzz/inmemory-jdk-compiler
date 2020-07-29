@@ -57,6 +57,7 @@ release-start:
     # always return true so that the build does not fail if there are no changes
     - git add test.txt
     - git commit -am "release-start test"
+    - git remote show
     - git push --all
     
 
