@@ -11,6 +11,11 @@ variables:
   DOCKER_HOST: "tcp://docker:2375"
   # Improve performance with overlayfs.
   DOCKER_DRIVER: overlay2
+
+stages:
+  - build
+  - test
+  - release-start
   
 cache:
   paths:
@@ -32,6 +37,26 @@ test:
     - mvn clean test
 #  only:
 #    - master
+
+release-start:
+  stage: release-start
+  when: manual
+  script:
+    # we need to extract the ssh/git URL as the runner uses a tokenized URL
+    - export CI_PUSH_REPO=`echo $CI_BUILD_REPO | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+    - echo $CI_PUSH_REPO
+    # runner runs on a detached HEAD, create a temporary local branch for editing
+    - git checkout -b ci_processing
+    - git config --global user.name "My Runner"
+    - git config --global user.email "runner@gitlab.example.org"
+    - git remote set-url --push origin "${CI_PUSH_REPO}"
+    # make your changes
+    - touch test.txt
+    # push changes
+    # always return true so that the build does not fail if there are no changes
+    - git push origin ci_processing:${CI_BUILD_REF_NAME} || true
+    
+
     
 #deploy:
 #  stage: deploy
