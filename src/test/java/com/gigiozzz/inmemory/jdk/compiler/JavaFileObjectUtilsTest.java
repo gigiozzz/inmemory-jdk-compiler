@@ -1,6 +1,7 @@
 package com.gigiozzz.inmemory.jdk.compiler;
 
 import static javax.tools.JavaFileObject.Kind.CLASS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,7 +18,7 @@ public class JavaFileObjectUtilsTest {
 	public void forResource_inJarFile() {
 		JavaFileObject resourceInJar = JavaFileObjectUtils
 				.forResource("com/gigiozzz/inmemory/jdk/compiler/JavaFileObjectUtilsTest.class");
-		assertTrue(resourceInJar.getKind().equals(CLASS));
+		assertEquals(CLASS, resourceInJar.getKind());
 		assertTrue(resourceInJar.toUri().getPath().endsWith("/com/gigiozzz/inmemory/jdk/compiler/JavaFileObjectUtilsTest.class"));
 		assertTrue(resourceInJar.getName().endsWith("/com/gigiozzz/inmemory/jdk/compiler/JavaFileObjectUtilsTest.class"));
 		assertTrue(resourceInJar.isNameCompatible("JavaFileObjectUtilsTest", CLASS));
@@ -27,9 +28,8 @@ public class JavaFileObjectUtilsTest {
 	public void forSourceLines() throws IOException {
 		JavaFileObject fileObject = JavaFileObjectUtils.forSourceLines("example.HelloWorld", "package example;", "",
 				"final class HelloWorld {", "  void sayHello() {", "    System.out.println(\"hello!\");", "  }", "}");
-		assertTrue(fileObject.getCharContent(false)
-				.equals("package example;\n" + "\n" + "final class HelloWorld {\n" + "  void sayHello() {\n"
-						+ "    System.out.println(\"hello!\");\n" + "  }\n" + "}"));
+		assertEquals("package example;\n" + "\n" + "final class HelloWorld {\n" + "  void sayHello() {\n"
+				+ "    System.out.println(\"hello!\");\n" + "  }\n" + "}", fileObject.getCharContent(false));
 	}
 
 	@Test

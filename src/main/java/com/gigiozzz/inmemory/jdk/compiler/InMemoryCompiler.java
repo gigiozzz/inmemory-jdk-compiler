@@ -256,13 +256,13 @@ public class InMemoryCompiler {
 					.enableExternalClasses().getClasspathURLs()) {
 				if(url.getProtocol().equals("file")) {
 
-					logger.debug("add path: " + url.getPath() + " url:" + url.toString());
+					logger.debug("add path:'{}' url:'{}'", url.getPath(), url.toString());
 					classpaths.add(url.getPath());
 				} else if (url.getProtocol().equals("jar")) {
-					logger.debug("jar url:" + url.toString());
+					logger.debug("jar url:'{}'", url.toString());
 
 				} else {
-					logger.debug("skipped protocol path: " + url.toString());
+					logger.debug("skipped protocol path:'{}' ", url.toString());
 					throw
 					new IllegalArgumentException(
 					"Given classloader consists of classpaths which are " +
@@ -298,7 +298,7 @@ public class InMemoryCompiler {
         }
                     
         long stopExecution = System.currentTimeMillis();
-		logger.debug("Execution time ms: " + (stopExecution - startExecution));
+		logger.debug("Execution time ms:'{}' ", (stopExecution - startExecution));
         return classpaths.stream().map(File::new).collect(toImmutableList());
     }
 

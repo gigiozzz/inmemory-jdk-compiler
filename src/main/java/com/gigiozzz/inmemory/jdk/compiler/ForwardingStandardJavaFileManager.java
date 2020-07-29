@@ -11,10 +11,11 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Set;
+
 import javax.tools.ForwardingJavaFileManager;
-import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,7 @@ public class ForwardingStandardJavaFileManager extends ForwardingJavaFileManager
     }
 
     // @Override for JDK 9 only
+	@Override
     public void setLocationFromPaths(Location location, Collection<? extends Path> searchpath)
             throws IOException {
         Method setLocationFromPaths;
