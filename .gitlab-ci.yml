@@ -20,6 +20,8 @@ cache:
 build:
   stage: build
   script:
+    - whoami
+    - printenv    
     - mvn clean install -DskipTests=true
 #  only:
 #    - master
