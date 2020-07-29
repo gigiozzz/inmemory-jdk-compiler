@@ -65,10 +65,10 @@ public class CompileFileCodeInClassPathTest {
         //uCompiler.withClasspathFrom(getClass().getClassLoader());
         uCompiler.withClasspathFrom(cl);
         
-        InMemoryCompilation gc = uCompiler.compile(Arrays.asList(JavaFileObjectUtils.forResource("test/Hello.java")));
+        InMemoryCompilerResult gc = uCompiler.compile(Arrays.asList(JavaFileObjectUtils.forResource("test/Hello.java")));
 
         //assertEquals(GoogleCompilation.Status.SUCCESS,gc.status());        
-        if(InMemoryCompilation.Status.SUCCESS.equals(gc.status())){
+        if(InMemoryCompilerResult.Status.SUCCESS.equals(gc.status())){
             try {
             	/*
                 for(JavaFileObject jfo: gc.generatedFiles()){
@@ -95,7 +95,7 @@ public class CompileFileCodeInClassPathTest {
         }
         
         
-        assertEquals(true, InMemoryCompilation.Status.SUCCESS.equals(gc.status()));
+        assertEquals(true, InMemoryCompilerResult.Status.SUCCESS.equals(gc.status()));
     }
     
      

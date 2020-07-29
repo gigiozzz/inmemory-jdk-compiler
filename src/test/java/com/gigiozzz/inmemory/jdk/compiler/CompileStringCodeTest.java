@@ -45,10 +45,10 @@ public class CompileStringCodeTest {
 
         final InMemoryCompiler uCompiler = InMemoryCompiler.javac();
         
-		InMemoryCompilation gc = uCompiler
+		InMemoryCompilerResult gc = uCompiler
 				.compile(Arrays.asList(JavaFileObjectUtils.forSourceString("test.HelloSource", SOURCE)));
 
-        if(InMemoryCompilation.Status.SUCCESS.equals(gc.status())){
+        if(InMemoryCompilerResult.Status.SUCCESS.equals(gc.status())){
             try {
                 for(JavaFileObject jfo: gc.generatedFiles()){
                     System.out.println("jfo source:"+jfo);
@@ -74,7 +74,7 @@ public class CompileStringCodeTest {
         }
         
         
-        assertEquals(true, InMemoryCompilation.Status.SUCCESS.equals(gc.status()));
+        assertEquals(true, InMemoryCompilerResult.Status.SUCCESS.equals(gc.status()));
     }
     
      

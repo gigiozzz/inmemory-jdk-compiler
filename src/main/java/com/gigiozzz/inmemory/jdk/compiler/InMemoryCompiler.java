@@ -174,7 +174,7 @@ public class InMemoryCompiler {
 	 *
 	 * @return the results of the compilation
 	 */
-	public final InMemoryCompilation compile(JavaFileObject... files) {
+	public final InMemoryCompilerResult compile(JavaFileObject... files) {
 		return compile(ImmutableList.copyOf(files));
 	}
 
@@ -183,7 +183,7 @@ public class InMemoryCompiler {
 	 *
 	 * @return the results of the compilation
 	 */
-	public final InMemoryCompilation compile(Iterable<? extends JavaFileObject> files) {
+	public final InMemoryCompilerResult compile(Iterable<? extends JavaFileObject> files) {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
 		InMemoryJavaFileManager fileManager = new InMemoryJavaFileManager(
 				javaCompiler().getStandardFileManager(diagnosticCollector, Locale.getDefault(), UTF_8), classLoader);
@@ -203,10 +203,10 @@ public class InMemoryCompiler {
 		task.setProcessors(processors());
 		boolean succeeded = task.call();
 		logger.debug("[InMemoryCompiler => compile] fileManager: '{}'", fileManager.getClass().toString());
-		InMemoryCompilation compilation = new InMemoryCompilation(this, files, succeeded,
+		InMemoryCompilerResult compilation = new InMemoryCompilerResult(this, files, succeeded,
 				diagnosticCollector.getDiagnostics(), fileManager);
-		if (compilation.status().equals(InMemoryCompilation.Status.FAILURE) && compilation.errors().isEmpty()) {
-			throw new CompilationFailureException(compilation);
+		if (compilation.status().equals(InMemoryCompilerResult.Status.FAILURE) && compilation.errors().isEmpty()) {
+			throw new InMemoryCompilerFailureException(compilation);
 		}
 		return compilation;
 	}
