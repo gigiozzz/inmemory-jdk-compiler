@@ -46,7 +46,7 @@ release-start:
     # - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
     - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | sed -e "s/https:\/\/gitlab-ci-token:.*@//g"`
     - echo "repo ${CI_PUSH_REPO}"
-    - export CI_PUSH_REPO=`echo "https://gitlab-ci-token:${CI_WRITE_TOKEN}@${CI_REPOSITORY_URL}"`
+    - export CI_PUSH_REPO=`echo "https://gitlab-ci-token:${CI_WRITE_TOKEN}@${CI_PUSH_REPO}"`
     - echo "repo ${CI_PUSH_REPO}"
     # runner runs on a detached HEAD, create a temporary local branch for editing
     - git config --global user.name "My Runner"
