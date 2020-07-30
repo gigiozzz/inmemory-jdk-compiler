@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Luigi Sportelli.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.gigiozzz.inmemory.jdk.compiler;
 
@@ -51,7 +61,6 @@ public class InMemoryCompiler {
 	private ImmutableList<Processor> processors;
 	private ImmutableList<String> options;
 	private Optional<ImmutableList<File>> classPath;
-	// private ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 	private ClassLoader classLoader = this.getClass().getClassLoader();
 
 	public InMemoryCompiler(JavaCompiler javaCompiler, ImmutableList<Processor> processors,
@@ -187,22 +196,22 @@ public class InMemoryCompiler {
 		DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
 		InMemoryJavaFileManager fileManager = new InMemoryJavaFileManager(
 				javaCompiler().getStandardFileManager(diagnosticCollector, Locale.getDefault(), UTF_8), classLoader);
-		classPath().ifPresent(classPath -> {
+		classPath().ifPresent(cp -> {
 			try {
-				fileManager.setLocation(StandardLocation.CLASS_PATH, classPath);
+				fileManager.setLocation(StandardLocation.CLASS_PATH, cp);
 			} catch (IOException e) {
 				// impossible by specification
 				throw new UncheckedIOException(e);
 			}
 		});
-		logger.debug("[InMemoryCompiler => compile] fileManager: '{}'", fileManager.getClass().toString());
+		logger.debug("[InMemoryCompiler => compile] fileManager: '{}'", fileManager.getClass());
 
 		CompilationTask task = javaCompiler().getTask(null, // use the default because old versions of javac log some
 															// output on stderr
 				fileManager, diagnosticCollector, options(), ImmutableSet.<String>of(), files);
 		task.setProcessors(processors());
 		boolean succeeded = task.call();
-		logger.debug("[InMemoryCompiler => compile] fileManager: '{}'", fileManager.getClass().toString());
+		logger.debug("[InMemoryCompiler => compile] fileManager: '{}'", fileManager.getClass());
 		InMemoryCompilerResult compilation = new InMemoryCompilerResult(this, files, succeeded,
 				diagnosticCollector.getDiagnostics(), fileManager);
 		if (compilation.status().equals(InMemoryCompilerResult.Status.FAILURE) && compilation.errors().isEmpty()) {
@@ -256,13 +265,13 @@ public class InMemoryCompiler {
 					.enableExternalClasses().getClasspathURLs()) {
 				if(url.getProtocol().equals("file")) {
 
-					logger.debug("add path:'{}' url:'{}'", url.getPath(), url.toString());
+					logger.debug("add path:'{}' url:'{}'", url.getPath(), url);
 					classpaths.add(url.getPath());
 				} else if (url.getProtocol().equals("jar")) {
-					logger.debug("jar url:'{}'", url.toString());
+					logger.debug("jar url:'{}'", url);
 
 				} else {
-					logger.debug("skipped protocol path:'{}' ", url.toString());
+					logger.debug("skipped protocol path:'{}' ", url);
 					throw
 					new IllegalArgumentException(
 					"Given classloader consists of classpaths which are " +
