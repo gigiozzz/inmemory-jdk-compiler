@@ -43,7 +43,8 @@ release-start:
   when: manual
   script:
     # we need to extract the ssh/git URL as the runner uses a tokenized URL
-    - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+    # - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+    - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL`
     - echo "repo ${CI_PUSH_REPO}"
     # runner runs on a detached HEAD, create a temporary local branch for editing
     - git config --global user.name "My Runner"
