@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Luigi Sportelli.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.gigiozzz.inmemory.jdk.compiler;
 
@@ -33,7 +43,7 @@ import com.google.common.collect.Sets;
 /**
  * The results of {@linkplain Compiler#compile compiling} source files.
  */
-public final class InMemoryCompilation {
+public final class InMemoryCompilerResult {
 
     private final InMemoryCompiler compiler;
     private final JavaFileManager fileManager;
@@ -42,7 +52,7 @@ public final class InMemoryCompilation {
     private final ImmutableList<Diagnostic<? extends JavaFileObject>> diagnostics;
     private final ImmutableList<JavaFileObject> generatedFiles;
 
-    InMemoryCompilation(
+    InMemoryCompilerResult(
             InMemoryCompiler compiler,
             Iterable<? extends JavaFileObject> sourceFiles,
             boolean successful,
@@ -249,12 +259,12 @@ public final class InMemoryCompilation {
      * Returns a description of the why the compilation failed.
      */
     public String describeFailureDiagnostics() {
-    	ImmutableList<Diagnostic<? extends JavaFileObject>> diagnostics = diagnostics();
-        if (diagnostics.isEmpty()) {
+		ImmutableList<Diagnostic<? extends JavaFileObject>> listDiagnostics = diagnostics();
+		if (listDiagnostics.isEmpty()) {
             return "Compilation produced no diagnostics.\n";
         }
         StringBuilder message = new StringBuilder("Compilation produced the following diagnostics:\n");
-        diagnostics.forEach(diagnostic -> message.append(diagnostic).append('\n'));
+		listDiagnostics.forEach(diagnostic -> message.append(diagnostic).append('\n'));
           
         return message.toString();
     }

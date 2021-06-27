@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 Luigi Sportelli.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.gigiozzz.inmemory.jdk.compiler;
 
@@ -40,19 +50,10 @@ import com.google.common.io.ByteSource;
  * @author sportelli
  */
 public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
-    private static final Logger logger = LoggerFactory.getLogger(ForwardingStandardJavaFileManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(InMemoryJavaFileManager.class);
     private final ClassLoader classLoader;
     private final Map<URI, JavaFileObject> inMemoryFileObjects = new HashMap<>();
-    /*
-    private final LoadingCache<URI, JavaFileObject> inMemoryFileObjects
-            = CacheBuilder.newBuilder().build(new CacheLoader<URI, JavaFileObject>() {
-                @Override
-                public JavaFileObject load(URI key) {
-                    System.out.println("load from cache first:"+key);                    
-                    return new GoogleInMemoryJavaFileObject(key);
-                }
-            });
-    */
+
     InMemoryJavaFileManager(StandardJavaFileManager fileManager) {
         super(fileManager);
         this.classLoader = this.getClass().getClassLoader();
@@ -70,7 +71,7 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
         }
         uri.append(relativeName);
         logger.debug("[InMemoryJavaFileManager => uriForFileObject]from location:'{}' packageName:'{}' relativeName:'{}' uri is:'{}'",
-                new Object[]{location, packageName, relativeName, uri.toString()});
+                new Object[]{location, packageName, relativeName, uri});
         return URI.create(uri.toString());
     }
 
@@ -105,7 +106,6 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
                 }
 				logger.debug("[InMemoryJavaFileManager => ClassLoader.findClass] jfo not null for key:'{}'", key);
                 
-                //final ByteArrayOutputStream bos = buffers.get(className);
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     try {
                         IOUtils.copy(jfo.openInputStream(), bos);
@@ -142,13 +142,9 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
             if(fo != null){
                 return fo;
             } else {
-				logger.debug("jfm [getFileForInput] not fonud" + relativeName);
+				logger.debug("jfm [getFileForInput] not fonud for relativeName:'{}'", relativeName);
                 throw new FileNotFoundException();
             }
-            /*
-            return inMemoryFileObjects.getIfPresent(
-                    uriForFileObject(location, packageName, relativeName));
-                    */
         } else {
             return super.getFileForInput(location, packageName, relativeName);
         }
@@ -163,12 +159,10 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
             if(fo != null){
                 return fo;
             } else {
-				logger.debug("jfm [getJavaFileForInput] id:" + className);
+				logger.debug("jfm [getJavaFileForInput] id:'{}'", className);
                 throw new FileNotFoundException();
             }
-            /*
-            return inMemoryFileObjects.getIfPresent(uriForJavaFileObject(location, className, kind));
-                    */
+
         } else {
             return super.getJavaFileForInput(location, className, kind);
         }
@@ -185,9 +179,7 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
             inMemoryFileObjects.put(uri, (InMemoryJavaFileObject)fo);
         }
         return fo;
-        /*
-        return inMemoryFileObjects.getUnchecked(uri);
-        */
+
     }
 
     @Override
@@ -201,14 +193,11 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
             inMemoryFileObjects.put(uri, fo);
         }
         return fo;
-        /*
-        return inMemoryFileObjects.getUnchecked(uri);
-                */
+
     }
 
     ImmutableList<JavaFileObject> getGeneratedSources() {
         ImmutableList.Builder<JavaFileObject> result = ImmutableList.builder();
-//        for (Entry<URI, JavaFileObject> entry : inMemoryFileObjects.asMap.entrySet()) {
         for (Entry<URI, JavaFileObject> entry : inMemoryFileObjects.entrySet()) {
             if (entry.getKey().getPath().startsWith("/" + StandardLocation.SOURCE_OUTPUT.name())
                     && (entry.getValue().getKind() == Kind.SOURCE)) {
@@ -219,9 +208,8 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
     }
 
     ImmutableList<JavaFileObject> getOutputFiles() {
-		logger.debug("[InMemoryJavaFileManager => getOutputFiles] JavaFileOutput  id:" + this.toString());
+		logger.debug("[InMemoryJavaFileManager => getOutputFiles] JavaFileOutput  id:'{}'", this);
 
-//        return ImmutableList.copyOf(inMemoryFileObjects.asMap().values());
         return ImmutableList.copyOf(inMemoryFileObjects.values());
     }
 
@@ -250,9 +238,9 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
                 @Override
                 public void close() throws IOException {
                     super.close();
-					logger.debug("openOutputStream byet lenght:" + this.toByteArray().length);
+					logger.debug("openOutputStream byet lenght:'{}'", this.toByteArray().length);
                     data = Optional.of(ByteSource.wrap(toByteArray()));
-					logger.debug("openOutputStream data lenght:" + data.get().size());
+					logger.debug("openOutputStream data lenght:'{}'", data.get().size());
                     lastModified = System.currentTimeMillis();
                 }
             };
@@ -283,7 +271,7 @@ public class InMemoryJavaFileManager extends ForwardingStandardJavaFileManager {
                 @Override
                 public void close() throws IOException {
                     super.close();
-					logger.debug("openWriter lenght:" + this.toString().length());
+					logger.debug("openWriter lenght:'{}'", this.toString().length());
                     data
                             = Optional.of(ByteSource.wrap(toString().getBytes(Charset.defaultCharset())));
                     lastModified = System.currentTimeMillis();

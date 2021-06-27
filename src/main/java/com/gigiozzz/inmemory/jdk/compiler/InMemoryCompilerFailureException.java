@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Google, Inc.
+ * Copyright (C) 2020 Luigi Sportelli.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ package com.gigiozzz.inmemory.jdk.compiler;
 /**
  * An exception thrown to indicate that compilation has failed for an unknown reason.
  */
-@SuppressWarnings("serial")
-public class CompilationFailureException extends RuntimeException {
+public class InMemoryCompilerFailureException extends RuntimeException {
   
-	public CompilationFailureException(InMemoryCompilation compilation) {
+	public InMemoryCompilerFailureException(InMemoryCompilerResult compilation) {
 	    super(
 	        compilation
 	            + " failed, but did not report any error diagnostics or throw any exceptions. "

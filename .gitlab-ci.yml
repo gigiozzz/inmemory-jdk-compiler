@@ -1,0 +1,105 @@
+image: maven:3.6.3-jdk-11
+
+# DinD service is required for Testcontainers
+services:
+  - docker:dind
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  # Instruct Testcontainers to use the daemon of DinD.
+  DOCKER_HOST: "tcp://docker:2375"
+  # Improve performance with overlayfs.
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build
+  - test
+  - release-start
+  
+cache:
+  paths:
+    - .m2/repository/
+    - target/
+
+build:
+  stage: build
+  script:
+    - whoami
+    - printenv    
+    - mvn clean install -DskipTests=true
+#  only:
+#    - master
+
+test:
+  stage: test
+  script:
+    - mvn clean test
+#  only:
+#    - master
+
+release-start:
+  stage: release-start
+  when: manual
+  variables:
+    ACTUAL_POPM_VER: "1.0.0-SNAPSHOT"
+    RELEASE_VER: "1.0.0"
+    NEXT_POM_VER: "1.1.0-SNAPSHOT"
+  script:
+    # check if a tag exist for release version otherwise go on
+    - if [[ `git tag -l ${RELEASE_VER}` == ${RELEASE_VER} ]]; then echo "tag exist for release version ${RELEASE_VER}"; exit 1; else echo "tag not exist for release version ${RELEASE_VER}"; fi
+    # we need to extract the ssh/git URL as the runner uses a tokenized URL
+    # - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
+    - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | sed -e "s/https:\/\/gitlab-ci-token:.*@//g"`
+    - echo "repo ${CI_PUSH_REPO}"
+    - export CI_PUSH_REPO=`echo "https://gitlab-ci-token:${CI_WRITE_TOKEN}@${CI_PUSH_REPO}"`
+    - echo "repo ${CI_PUSH_REPO}"
+    # debug purpose
+    - echo "==> actual pom version ${ACTUAL_POPM_VER} <=="
+    - echo "==> release version ${RELEASE_VER} <=="
+    - echo "==> next pom version ${NEXT_POM_VER} <=="
+    # runner runs on a detached HEAD, create a temporary local branch for editing
+    - git config --global user.name "My Runner"
+    - git config --global user.email "runner@gitlab.example.org"
+    - git remote set-url --push origin "${CI_PUSH_REPO}"
+    # usefull to fetch all remote branch otherwise also checkout master fails
+    - git fetch
+    - git checkout develop
+    - git checkout -b release/"${RELEASE_VER}" develop
+    #- git checkout release/"${RELEASE_VER}"
+    # set new versionand prepare for release
+#    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
+    - mvn versions:set -DnewVersion="${RELEASE_VER}"
+#    - mvn --batch-mode release:prepare -DremoteTagging=false -DupdateWorkingCopyVersions=false -DgenerateBackupPoms=false
+    # debug purpose
+    - cat pom.xml
+    # commit and push changes
+    # always return true so that the build does not fail if there are no changes
+    - git commit -am "change pom version to ${RELEASE_VER}"
+    - git push origin release/"${RELEASE_VER}"
+    # merge on master
+    - git checkout master
+    - git merge --no-ff release/"${RELEASE_VER}"
+    - git push origin master 
+    # tag master
+    - git tag -a "${RELEASE_VER}"
+    - git push origin --tags
+    # merge on develop
+    - git checkout develop
+    - git merge --no-ff master
+    - mvn versions:set -DnewVersion="${NEXT_POM_VER}"    
+    - git commit -am "change develop pom version to next dev versioin ${RELEASE_VER}"
+    - git push origin develop 
+    # delete release branch
+    - git branch -d release/"${RELEASE_VER}"
+    - git push release/"${RELEASE_VER}"
+
+    
+
+    
+#deploy:
+#  stage: deploy
+#  script:
+#    - mvn $MAVEN_CLI_OPTS deploy
+#  only:
+#    - master
