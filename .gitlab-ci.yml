@@ -64,25 +64,25 @@ release-start:
     - git remote set-url --push origin "${CI_PUSH_REPO}"
     # usefull to fetch all remote branch otherwise also checkout master fails
     - git fetch
-    - git checkout develop
-    - git checkout -b release/"${RELEASE_VER}" develop
+#    - git checkout develop
+#    - git checkout -b release/"${RELEASE_VER}" develop
     #- git checkout release/"${RELEASE_VER}"
     # set new versionand prepare for release
 #    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
-    - mvn versions:set -DnewVersion="${RELEASE_VER}"
+#    - mvn versions:set -DnewVersion="${RELEASE_VER}"
 #    - mvn --batch-mode release:prepare -DremoteTagging=false -DupdateWorkingCopyVersions=false -DgenerateBackupPoms=false
     # debug purpose
-    - cat pom.xml
+#    - cat pom.xml
     # commit and push changes
     # always return true so that the build does not fail if there are no changes
-    - git commit -am "change pom version to ${RELEASE_VER}"
-    - git push origin release/"${RELEASE_VER}"
+#    - git commit -am "change pom version to ${RELEASE_VER}"
+#    - git push origin release/"${RELEASE_VER}"
     # merge on master
     - git checkout master
-    - git merge --no-ff release/"${RELEASE_VER}"
-    - git push origin master 
+#    - git merge --no-ff release/"${RELEASE_VER}"
+#    - git push origin master 
     # tag master
-    - git tag -a "${RELEASE_VER}"
+    - git tag -a v"${RELEASE_VER}" -m "release version ${RELEASE_VER}"
     - git push origin --tags
     # merge on develop
     - git checkout develop
