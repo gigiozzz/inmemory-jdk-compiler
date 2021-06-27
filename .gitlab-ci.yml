@@ -47,7 +47,7 @@ release-start:
     NEXT_POM_VER: "1.1.0-SNAPSHOT"
   script:
     # check if a tag exist for release version otherwise go on
-    - if [[ `git tag -l ${RELEASE_VER}` == ${RELEASE_VER} ]]; then echo "tag exist for release version ${RELEASE_VER}"; exit 1; else echo "tag not exist for release version ${RELEASE_VER}"; fi
+#    - if [[ `git tag -l ${RELEASE_VER}` == ${RELEASE_VER} ]]; then echo "tag exist for release version ${RELEASE_VER}"; exit 1; else echo "tag not exist for release version ${RELEASE_VER}"; fi
     # we need to extract the ssh/git URL as the runner uses a tokenized URL
     # - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
     - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | sed -e "s/https:\/\/gitlab-ci-token:.*@//g"`
