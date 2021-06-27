@@ -100,6 +100,10 @@ public class InMemoryCompiler {
 
 	/**
 	 * Returns a {@link Compiler} that uses a given {@link JavaCompiler} instance.
+	 * 
+	 * @param javaCompiler the {@link JavaCompiler} to use to create the
+	 *                     {@link InMemoryCompiler}
+	 * @return the {@link InMemoryCompiler}
 	 */
 	public static InMemoryCompiler compiler(JavaCompiler javaCompiler) {
 		return new InMemoryCompiler(javaCompiler, ImmutableList.of(), ImmutableList.of(), Optional.empty());

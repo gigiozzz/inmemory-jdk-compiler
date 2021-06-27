@@ -3,6 +3,7 @@ In Memory JDK Compiler
 
 
 A library that implments Java Compiler API (JSR 199) to use in memory javac compilation with or without annotation processors.
+This in memory compiler is compatible with JDK 11
 
 License
 -------

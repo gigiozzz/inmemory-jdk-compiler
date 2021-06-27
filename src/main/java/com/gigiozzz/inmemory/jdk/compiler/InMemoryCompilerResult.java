@@ -41,7 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 /**
- * The results of {@linkplain Compiler#compile compiling} source files.
+ * The results of {@linkplain InMemoryCompiler#compile compiling} source files.
  */
 public final class InMemoryCompilerResult {
 

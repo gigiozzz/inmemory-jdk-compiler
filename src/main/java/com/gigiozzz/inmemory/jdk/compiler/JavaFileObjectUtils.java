@@ -157,11 +157,15 @@ public final class JavaFileObjectUtils {
     }
 
     /**
-     * Returns a {@link JavaFileObject} for the resource at the given
-     * {@link URL}. The returned object will always be read-only and the
-     * {@linkplain JavaFileObject#getKind() kind} is inferred via the
-     * {@link Kind#extension}.
-     */
+	 * Returns a {@link JavaFileObject} for the resource at the given {@link URL}.
+	 * The returned object will always be read-only and the
+	 * {@linkplain JavaFileObject#getKind() kind} is inferred via the
+	 * {@link Kind#extension}.
+	 * 
+	 * @param resourceUrl the URL resource
+	 * @return the {@link JavaFileObject}
+	 * 
+	 */
     public static JavaFileObject forResource(URL resourceUrl) {
         if ("jar".equals(resourceUrl.getProtocol())) {
             return new JarFileJavaFileObject(resourceUrl);
@@ -171,10 +175,14 @@ public final class JavaFileObjectUtils {
     }
 
     /**
-     * Returns a {@link JavaFileObject} for the class path resource with the
-     * given {@code resourceName}. This method is equivalent to invoking
-     * {@code forResource(Resources.getResource(resourceName))}.
-     */
+	 * Returns a {@link JavaFileObject} for the class path resource with the given
+	 * {@code resourceName}. This method is equivalent to invoking
+	 * {@code forResource(Resources.getResource(resourceName))}.
+	 * 
+	 * @param resourceName the class path resource i.e.:
+	 *                     "com/gigiozzz/inmemory/jdk/compiler/JavaFileObjectUtilsTest.class"
+	 * @return the {@link JavaFileObject}
+	 */
     public static JavaFileObject forResource(String resourceName) {
         return forResource(Resources.getResource(resourceName));
     }

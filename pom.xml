@@ -7,6 +7,19 @@
 	<artifactId>inmemory-jdk-compiler</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
+	<name>In memory JDK compiler</name>
+	<description>A library that implments Java Compiler API (JSR 199) to use in memory javac compilation with or without annotation processors.</description>
+	<url>https://github.com/gigiozzz/inmemory-jdk-compiler</url>
+	<scm>
+		<url>https://github.com/gigiozzz/inmemory-jdk-compiler</url>
+	</scm>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.release>11</java.release>
@@ -81,6 +94,32 @@
 					<source>${java.release}</source>
 					<target>${java.release}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
