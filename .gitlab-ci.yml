@@ -47,8 +47,8 @@ release-start:
     NEXT_POM_VER: "1.1.0-SNAPSHOT"
   script:
     # clean local tags and fetch from remote
-    git tag -l | xargs git tag -d
-    git fetch --tags
+    - git tag -l | xargs git tag -d
+    - git fetch --tags
     # check if a tag exist for release version otherwise go on
     - if [[ `git tag -l v${RELEASE_VER}` == v${RELEASE_VER} ]]; then echo "tag exist for release version ${RELEASE_VER}"; exit 1; else echo "tag not exist for release version ${RELEASE_VER}"; fi
     # we need to extract the ssh/git URL as the runner uses a tokenized URL
