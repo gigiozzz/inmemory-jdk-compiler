@@ -41,6 +41,10 @@ test:
 release-start:
   stage: release-start
   when: manual
+  variables:
+    ACTUAL_POPM_VER: "1.0.0-SNAPSHOT"
+    RELEASE_VER: "1.0.0"
+    NEXT_POM_VER: "1.1.0-SNAPSHOT"
   script:
     # we need to extract the ssh/git URL as the runner uses a tokenized URL
     # - export CI_PUSH_REPO=`echo $CI_REPOSITORY_URL | perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#'`
@@ -51,30 +55,31 @@ release-start:
     - echo "actual pom version ${ACTUAL_POPM_VER}"
     - echo "release version ${RELEASE_VER}"
     - echo "next pom version ${NEXT_POM_VER}"
-    # runner runs on a detached HEAD, create a temporary local branch for editing
-    - git config --global user.name "My Runner"
-    - git config --global user.email "runner@gitlab.example.org"
-    - git remote set-url --push origin "${CI_PUSH_REPO}"
-    - git checkout develop
-    - git checkout -b release/"${RELEASE_VER}" develop
-    - git checkout release/"${RELEASE_VER}"
-    # make your changes
-    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
-    - cat pom.xml
-    # push changes
-    # always return true so that the build does not fail if there are no changes
-    - git commit -am "change pom version to ${RELEASE_VER}"
-    - git remote show
-    - git push origin release/"${RELEASE_VER}"
-    - git checkout master
-    - git merge --no-ff release/"${RELEASE_VER}"
-    - git push origin master 
-    - git tag -a "${RELEASE_VER}"
-    - git checkout develop
-    - git merge --no-ff master
-    - git branch -d release/1.2.0
-    - git push --all
-    - git push origin --tags
+#    # runner runs on a detached HEAD, create a temporary local branch for editing
+#    - git config --global user.name "My Runner"
+#    - git config --global user.email "runner@gitlab.example.org"
+#    - git remote set-url --push origin "${CI_PUSH_REPO}"
+#    - git checkout develop
+#    - git checkout -b release/"${RELEASE_VER}" develop
+#    - git checkout release/"${RELEASE_VER}"
+#    # make your changes
+#    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
+#    - cat pom.xml
+#    # push changes
+#    # always return true so that the build does not fail if there are no changes
+#    - git commit -am "change pom version to ${RELEASE_VER}"
+#    - git remote show
+#    - git push origin release/"${RELEASE_VER}"
+#    - git checkout master
+#    - git merge --no-ff release/"${RELEASE_VER}"
+#    - git push origin master 
+#    - git tag -a "${RELEASE_VER}"
+#    - git checkout develop
+#    - git merge --no-ff master
+#    - git branch -d release/1.2.0
+#    - git push --all
+#    - git push origin --tags
+
     
 
     
