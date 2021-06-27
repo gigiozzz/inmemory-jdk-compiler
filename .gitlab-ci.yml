@@ -56,15 +56,15 @@ release-start:
     - echo "release version ${RELEASE_VER}"
     - echo "next pom version ${NEXT_POM_VER}"
 #    # runner runs on a detached HEAD, create a temporary local branch for editing
-#    - git config --global user.name "My Runner"
-#    - git config --global user.email "runner@gitlab.example.org"
-#    - git remote set-url --push origin "${CI_PUSH_REPO}"
-#    - git checkout develop
-#    - git checkout -b release/"${RELEASE_VER}" develop
-#    - git checkout release/"${RELEASE_VER}"
+    - git config --global user.name "My Runner"
+    - git config --global user.email "runner@gitlab.example.org"
+    - git remote set-url --push origin "${CI_PUSH_REPO}"
+    - git checkout develop
+    - git checkout -b release/"${RELEASE_VER}" develop
+    - git checkout release/"${RELEASE_VER}"
 #    # make your changes
-#    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
-#    - cat pom.xml
+    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
+    - cat pom.xml
 #    # push changes
 #    # always return true so that the build does not fail if there are no changes
 #    - git commit -am "change pom version to ${RELEASE_VER}"
