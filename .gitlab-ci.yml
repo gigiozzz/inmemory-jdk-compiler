@@ -62,6 +62,8 @@ release-start:
     - git config --global user.name "My Runner"
     - git config --global user.email "runner@gitlab.example.org"
     - git remote set-url --push origin "${CI_PUSH_REPO}"
+    # usefull to fetch all remote branch otherwise also checkout master fails
+    - git fetch
     - git checkout develop
     - git checkout -b release/"${RELEASE_VER}" develop
     #- git checkout release/"${RELEASE_VER}"
