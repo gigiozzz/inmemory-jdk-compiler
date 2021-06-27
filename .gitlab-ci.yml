@@ -48,20 +48,33 @@ release-start:
     - echo "repo ${CI_PUSH_REPO}"
     - export CI_PUSH_REPO=`echo "https://gitlab-ci-token:${CI_WRITE_TOKEN}@${CI_PUSH_REPO}"`
     - echo "repo ${CI_PUSH_REPO}"
+    - echo "actual pom version ${ACTUAL_POPM_VER}"
+    - echo "release version ${RELEASE_VER}"
+    - echo "next pom version ${NEXT_POM_VER}"
     # runner runs on a detached HEAD, create a temporary local branch for editing
     - git config --global user.name "My Runner"
     - git config --global user.email "runner@gitlab.example.org"
     - git remote set-url --push origin "${CI_PUSH_REPO}"
     - git checkout develop
-    - git checkout -b ci_processing
+    - git checkout -b release/"${RELEASE_VER}" develop
+    - git checkout release/"${RELEASE_VER}"
     # make your changes
-    - touch test.txt
+    - sed -i "s/${ACTUAL_POPM_VER}/${RELEASE_VER}/g" pom.xml
+    - cat pom.xml
     # push changes
     # always return true so that the build does not fail if there are no changes
-    - git add test.txt
-    - git commit -am "release-start test"
+    - git commit -am "change pom version to ${RELEASE_VER}"
     - git remote show
+    - git push origin release/"${RELEASE_VER}"
+    - git checkout master
+    - git merge --no-ff release/"${RELEASE_VER}"
+    - git push origin master 
+    - git tag -a "${RELEASE_VER}"
+    - git checkout develop
+    - git merge --no-ff master
+    - git branch -d release/1.2.0
     - git push --all
+    - git push origin --tags
     
 
     
