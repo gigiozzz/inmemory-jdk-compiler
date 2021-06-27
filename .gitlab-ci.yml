@@ -82,7 +82,7 @@ release-start:
     - git merge --no-ff release/"${RELEASE_VER}"
     - git push origin master 
     # tag master
-    - git tag -a "${RELEASE_VER}"
+    - git tag -a v"${RELEASE_VER}" -m "release version ${RELEASE_VER}"
     - git push origin --tags
     # merge on develop
     - git checkout develop
@@ -90,9 +90,8 @@ release-start:
     - mvn versions:set -DnewVersion="${NEXT_POM_VER}"    
     - git commit -am "change develop pom version to next dev versioin ${RELEASE_VER}"
     - git push origin develop 
-    # delete release branch
-    - git branch -d release/"${RELEASE_VER}"
-    - git push release/"${RELEASE_VER}"
+    # delete release branch    
+    - git push origin --delete release/"${RELEASE_VER}"
 
     
 
