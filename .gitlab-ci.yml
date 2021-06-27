@@ -78,21 +78,20 @@ release-start:
 #    - git commit -am "change pom version to ${RELEASE_VER}"
 #    - git push origin release/"${RELEASE_VER}"
     # merge on master
-    - git checkout master
+#    - git checkout master
 #    - git merge --no-ff release/"${RELEASE_VER}"
 #    - git push origin master 
     # tag master
-    - git tag -a v"${RELEASE_VER}" -m "release version ${RELEASE_VER}"
-    - git push origin --tags
+#    - git tag -a v"${RELEASE_VER}" -m "release version ${RELEASE_VER}"
+#    - git push origin --tags
     # merge on develop
-    - git checkout develop
-    - git merge --no-ff master
-    - mvn versions:set -DnewVersion="${NEXT_POM_VER}"    
-    - git commit -am "change develop pom version to next dev versioin ${RELEASE_VER}"
-    - git push origin develop 
-    # delete release branch
-    - git branch -d release/"${RELEASE_VER}"
-    - git push release/"${RELEASE_VER}"
+#    - git checkout develop
+#    - git merge --no-ff master
+#    - mvn versions:set -DnewVersion="${NEXT_POM_VER}"    
+#    - git commit -am "change develop pom version to next dev versioin ${RELEASE_VER}"
+#    - git push origin develop 
+    # delete release branch    
+    - git push origin --delete release/"${RELEASE_VER}"
 
     
 
